@@ -1,3 +1,6 @@
 .idea
 vendor
 composer.lock
+site/vendor
+site/app/views/*.php
+coveralls.json
