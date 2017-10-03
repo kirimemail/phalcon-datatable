@@ -1,6 +1,6 @@
 {
     "name": "kirimemail/phalcon-datatables",
-    "description": "Fork of m1ome/phalcon-datatables\nA DataTables adapter for Phalcon Framework",
+    "description": "A DataTables adapter for Phalcon Framework",
     "keywords": ["Phalcon", "DataTables", "Plugin"],
     "license": "MIT",
     "autoload": {
