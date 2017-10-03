@@ -10,7 +10,7 @@ matrix:
   fast_finish: true
 
 before_script:
-  - git clone -b 3.0.4 git://github.com/phalcon/cphalcon.git --depth=1 && cd cphalcon/build/safe && phpize && ./configure --enable-phalcon && sudo make install
+  - git clone -b v3.2.2 git://github.com/phalcon/cphalcon.git --depth=1 && cd cphalcon/build/safe && phpize && ./configure --enable-phalcon && sudo make install
   - cd ../../../ && phpenv config-add ./spec/phalcon.ini
   - composer self-update
   - composer install --dev --prefer-source
