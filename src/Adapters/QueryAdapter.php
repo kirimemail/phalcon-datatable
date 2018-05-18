@@ -53,7 +53,10 @@ class QueryAdapter extends AdapterInterface
         } else {
             $order_by .= ' ORDER BY ';
             foreach ($orders as $order) {
-                $order_by .= $this->parser->getColumns()[$order['column']]['name'] . ' ' . $order['dir'] . ' , ';
+                $column   = $this->parser->getColumnById( $order['column'] );
+                if($this->columnExists($column,true)) {
+                    $order_by .= $this->parser->getColumns()[$order['column']]['name'] . ' ' . $order['dir'] . ' , ';
+                }
             }
             $order_by = rtrim($order_by, ', ');
         }
