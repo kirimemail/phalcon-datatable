@@ -53,6 +53,13 @@ class ParamsParser extends Component
         }, $this->params['columns']));
     }
 
+    public function getOrderableColumns()
+    {
+        return array_filter(array_map(function ($item) {
+            return (isset($item['orderable']) && $item['orderable'] === "true") ? $item['data'] : null;
+        }, $this->params['columns']));
+    }
+
     public function getDraw()
     {
         return $this->params['draw'];
@@ -76,6 +83,12 @@ class ParamsParser extends Component
     public function getColumnById($id)
     {
         return isset($this->params['columns'][$id]['data']) ? $this->params['columns'][$id]['data'] : null;
+    }
+
+
+    public function getColumnByIdFull($id)
+    {
+        return $this->params['columns'][$id];
     }
 
     public function getSearch()
