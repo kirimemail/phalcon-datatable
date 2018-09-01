@@ -2,6 +2,9 @@
 
 namespace DataTables\Adapters;
 
+use DataTables\CacheHelper;
+use DataTables\HashHelper;
+
 class QueryAdapter extends AdapterInterface
 {
 
@@ -9,6 +12,15 @@ class QueryAdapter extends AdapterInterface
     protected $column = [];
     protected $global = [];
     protected $order = [];
+
+    /** @var CacheHelper $cacheHelper */
+    private $cacheHelper;
+
+    public function __construct($length, $cache_di = 'modelsCache', $lifetime = 86400)
+    {
+        parent::__construct($length);
+        $this->cacheHelper = new CacheHelper($cache_di, $lifetime);
+    }
 
     public function setQuery(array $query)
     {
@@ -18,6 +30,7 @@ class QueryAdapter extends AdapterInterface
     public function getResponse()
     {
         // init
+        /** @var \Phalcon\Db\AdapterInterface $db */
         $db = \Phalcon\DI::getDefault()->getShared('db');
 
         // generates query
@@ -68,11 +81,35 @@ class QueryAdapter extends AdapterInterface
         $limit = ' LIMIT ' . $this->parser->getOffset() . ',' . $this->parser->getLimit();
 
         if (!empty($group_by)) {
-            $total = $db->query($select_count . $from . $where . $group_by)->numRows();
-            $filtered = $db->query($select_count . $from . $where . $where_or . $group_by)->numRows();
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($select_count . $from . $where . $group_by))) {
+                $total = $cache->numRows();
+            } else {
+                $temp = $db->query($select_count . $from . $where . $group_by);
+                $this->cacheHelper->saveCache(HashHelper::hash($select_count . $from . $where . $group_by), $temp);
+                $total = $temp->numRows();
+            }
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($select_count . $from . $where . $where_or . $group_by))) {
+                $filtered = $cache->numRows();
+            } else {
+                $temp = $db->query($select_count . $from . $where . $where_or . $group_by);
+                $this->cacheHelper->saveCache(HashHelper::hash($select_count . $from . $where . $where_or . $group_by), $temp);
+                $filtered = $temp->numRows();
+            }
         } else {
-            $total = $db->query($select_count . $from . $where . $group_by)->fetch()['total'];
-            $filtered = $db->query($select_count . $from . $where . $where_or . $group_by)->fetch()['total'];
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($select_count . $from . $where . $group_by))) {
+                $total = $cache->fetch()['total'];
+            } else {
+                $temp = $db->query($select_count . $from . $where . $group_by);
+                $this->cacheHelper->saveCache(HashHelper::hash($select_count . $from . $where . $group_by), $temp);
+                $total = $temp->fetch()['total'];
+            }
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($select_count . $from . $where . $where_or . $group_by))) {
+                $filtered = $cache->fetch()['total'];
+            } else {
+                $temp = $db->query($select_count . $from . $where . $where_or . $group_by);
+                $this->cacheHelper->saveCache(HashHelper::hash($select_count . $from . $where . $where_or . $group_by), $temp);
+                $filtered = $temp->fetch()['total'];
+            }
         }
 
         return $this->formResponse([
