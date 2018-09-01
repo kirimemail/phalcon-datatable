@@ -91,6 +91,7 @@ describe("AdapterInterface", function () {
             $response = $this->adapter->formResponse([]);
             expect($response)->toBe([
                 'draw' => null,
+                'columns' => $this->adapter->getColumns(),
                 'recordsTotal' => 0,
                 'recordsFiltered' => 0,
                 'data' => []

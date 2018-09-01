@@ -44,6 +44,10 @@ class CacheHelper
 
     public function saveCache($key, $data)
     {
-        return $this->cache->save($key, $data, $this->lifetime);
+        if ($this->cache != null) {
+            return $this->cache->save($key, $data, $this->lifetime);
+        }
+
+        return false;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Spec;
 
 describe("ParamsParser", function () {
@@ -206,11 +207,9 @@ describe("ParamsParser", function () {
 
 
     afterEach(function () {
-
-        unset($_GET);
-        unset($_POST);
-        unset($_SERVER);
-
+        $_GET = [];
+        $_POST = [];
+        $_SERVER = [];
     });
 
 });

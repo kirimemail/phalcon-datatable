@@ -17,7 +17,7 @@ class QueryBuilder extends AdapterInterface
     /** @var CacheHelper $cacheHelper */
     private $cacheHelper;
 
-    public function __construct($length, $cache_di, $lifetime)
+    public function __construct($length, $cache_di = 'modelsCache', $lifetime = 3600)
     {
         parent::__construct($length);
         $this->cacheHelper = new CacheHelper($cache_di, $lifetime);

@@ -14,6 +14,7 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
     protected $options;
     protected $params;
     protected $response;
+    protected $columns;
 
     /**
      *
@@ -52,7 +53,7 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         $response->send();
     }
 
-    public function fromBuilder($builder, $cache_di = "modelsCache", $lifetime = 86400, $columns = [])
+    public function fromBuilder($builder, $cache_di = "modelsCache", $lifetime = 3600, $columns = [])
     {
         if (empty($columns)) {
             $columns = $builder->getColumns();
@@ -62,6 +63,7 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         $adapter->setBuilder($builder);
         $adapter->setParser($this->parser);
         $adapter->setColumns($columns);
+        $this->columns = $adapter->getColumns();
         $this->response = $adapter->getResponse();
 
         return $this;
@@ -77,6 +79,7 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         $adapter->setResultSet($resultSet);
         $adapter->setParser($this->parser);
         $adapter->setColumns($columns);
+        $this->columns = $adapter->getColumns();
         $this->response = $adapter->getResponse();
 
         return $this;
@@ -91,14 +94,15 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         $adapter->setArray($array);
         $adapter->setParser($this->parser);
         $adapter->setColumns($columns);
+        $this->columns = $adapter->getColumns();
         $this->response = $adapter->getResponse();
 
         return $this;
     }
 
-    public function fromQuery($params = [])
+    public function fromQuery($params = [], $cache_di = "modelsCache", $lifetime = 3600)
     {
-        $adapter = new QueryAdapter($this->options['length']);
+        $adapter = new QueryAdapter($this->options['length'], $cache_di, $lifetime);
         $adapter->setQuery($params);
         $adapter->setParser($this->parser);
         $this->response = $adapter->getResponse();
@@ -106,4 +110,8 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         return $this;
     }
 
+    public function getColumns()
+    {
+        return $this->columns;
+    }
 }
