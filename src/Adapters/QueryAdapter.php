@@ -18,6 +18,7 @@ class QueryAdapter extends AdapterInterface
     public function getResponse()
     {
         // init
+        /** @var \Phalcon\Db\AdapterInterface $db */
         $db = \Phalcon\DI::getDefault()->getShared('db');
 
         // generates query

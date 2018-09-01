@@ -1,6 +1,8 @@
 <?php
+
 namespace DataTables;
 
+use Phalcon\Di;
 use Phalcon\Mvc\User\Component;
 
 class ParamsParser extends Component
@@ -18,9 +20,9 @@ class ParamsParser extends Component
             'search' => [],
             'order' => []
         ];
-        $request = $this->di->get('request');
+        $request = Di::getDefault()->get('request');
         $requestParams = $request->isPost() ? $request->getPost() : $request->getQuery();
-        $this->params = (array)$requestParams + $params;
+        $this->params = (array) $requestParams + $params;
         $this->setPage();
     }
 
@@ -31,7 +33,7 @@ class ParamsParser extends Component
 
     public function setPage()
     {
-        $this->page = (int)(floor($this->params['start'] / $this->params['length']) + 1);
+        $this->page = (int) (floor($this->params['start'] / $this->params['length']) + 1);
     }
 
     public function getPage()
