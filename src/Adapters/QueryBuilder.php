@@ -16,11 +16,13 @@ class QueryBuilder extends AdapterInterface
     private $_bind;
     /** @var CacheHelper $cacheHelper */
     private $cacheHelper;
+    private $cache_enabled;
 
-    public function __construct($length, $cache_di = 'modelsCache', $lifetime = 3600)
+    public function __construct($length, $cache_enabled = true, $cache_di = 'modelsCache', $lifetime = 3600)
     {
         parent::__construct($length);
         $this->cacheHelper = new CacheHelper($cache_di, $lifetime);
+        $this->cache_enabled = $cache_enabled;
     }
 
     public function setBuilder($builder)
@@ -35,11 +37,15 @@ class QueryBuilder extends AdapterInterface
             'limit' => 1,
             'page' => 1,
         ]);
-        if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getWhere()))) {
-            $total = $cache;
+        if ($this->cache_enabled) {
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getWhere()))) {
+                $total = $cache;
+            } else {
+                $total = $builder->getPaginate();
+                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getWhere()), $total);
+            }
         } else {
             $total = $builder->getPaginate();
-            $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getWhere()), $total);
         }
         $this->global_search = [];
         $this->column_search = [];
@@ -70,11 +76,16 @@ class QueryBuilder extends AdapterInterface
             'limit' => $this->parser->getLimit($total->total_items),
             'page' => $this->parser->getPage(),
         ]);
-        if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getWhere() . $this->parser->getPage()))) {
-            $filtered = $cache;
+
+        if ($this->cache_enabled) {
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getWhere() . $this->parser->getPage()))) {
+                $filtered = $cache;
+            } else {
+                $filtered = $builder->getPaginate();
+                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getWhere() . $this->parser->getPage()), $total);
+            }
         } else {
             $filtered = $builder->getPaginate();
-            $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getWhere() . $this->parser->getPage()), $total);
         }
 
         return $this->formResponse([

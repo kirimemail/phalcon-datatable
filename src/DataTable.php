@@ -27,6 +27,9 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         $default = [
             'limit' => 20,
             'length' => 50,
+            'cache_enable' => true,
+            'cache_di' => 'modelsCache',
+            'cache_lifetime' => 3600,
         ];
         $this->options = $options + $default;
         $this->parser = new ParamsParser($this->options['limit']);
@@ -53,13 +56,13 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         $response->send();
     }
 
-    public function fromBuilder($builder, $cache_di = "modelsCache", $lifetime = 3600, $columns = [])
+    public function fromBuilder($builder, $columns = [])
     {
         if (empty($columns)) {
             $columns = $builder->getColumns();
             $columns = (is_array($columns)) ? $columns : array_map('trim', explode(',', $columns));
         }
-        $adapter = new QueryBuilder($this->options['length'], $cache_di, $lifetime);
+        $adapter = new QueryBuilder($this->options['length'], $this->options['cache_enable'], $this->options['cache_di'], $this->options['cache_lifetime']);
         $adapter->setBuilder($builder);
         $adapter->setParser($this->parser);
         $adapter->setColumns($columns);

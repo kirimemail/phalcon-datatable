@@ -2,19 +2,25 @@ language: php
 
 php:
   - 5.5
-  - 5.4
   - 5.6
   - 7.0
 
 matrix:
   fast_finish: true
 
-before_script:
-  - git clone -b v3.2.2 git://github.com/phalcon/cphalcon.git --depth=1 && cd cphalcon/build/safe && phpize && ./configure --enable-phalcon && sudo make install
-  - cd ../../../ && phpenv config-add ./spec/phalcon.ini
-  - composer self-update
-  - composer install --dev --prefer-source
+before_install:
+    - ulimit -c unlimited -S || true
+    - phpenv config-rm xdebug.ini || true
+    - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com $GH_TOKEN; fi;
+    - export PHP_MAJOR="$(echo $TRAVIS_PHP_VERSION | cut -d '.' -f 1)"
+
+install:
+  - bash $TRAVIS_BUILD_DIR/tests/ci/install_phalcon.sh
+  - travis_retry composer install --prefer-dist --no-interaction --no-suggest --optimize-autoloader
   - phpenv rehash
+  - ls -al `$(phpenv which php-config) --extension-dir`
+  - $(phpenv which php) -v
+  - $(phpenv which php) -m
 
 script: vendor/bin/kahlan
 
