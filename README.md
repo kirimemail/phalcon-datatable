@@ -28,7 +28,7 @@ This is a [Phalcon Framework](http://phalconphp.com/) adapter for [DataTables](h
 # Example usage
 It uses Phalcon [QueryBuilder](http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html) for pagination in DataTables.
 
-In example we have a stantart MVC application, with database enabled. Don't need to provide a normal bootstrap PHP file, for Phalcon documentation, visit official site.
+In example we have a standart MVC application, with database enabled. Don't need to provide a normal bootstrap PHP file, for Phalcon documentation, visit official site.
 
 ### Controller (using QueryBuilder):
 ```php
@@ -154,6 +154,25 @@ class User extends \Phalcon\Mvc\Model {
         </table>
     </body>
 </html>
+```
+
+# Options
+There are few additional option available
+```php
+<?php
+$options = [
+    /**
+    * Cache options, enabled by default, and defined by hash of the query.
+    * Used for caching total and filtered, which is used by in each call.
+    * By caching it, we are decreasing the query need to run.   
+    */
+    "cache_enabled"=>true, 
+    "cache_di"=>"modelsCache",
+    "cache_lifetime"=>3600
+];
+//example
+$dt = new \DataTables\DataTable($options);
+    ?>
 ```
 
 # More examples
