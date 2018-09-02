@@ -9,11 +9,14 @@ php:
 matrix:
   fast_finish: true
 
+env:
+  global:
+    - PHALCON_VERSION="v3.4.0"
+
 before_install:
-    - ulimit -c unlimited -S || true
-    - phpenv config-rm xdebug.ini || true
-    - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com $GH_TOKEN; fi;
-    - export PHP_MAJOR="$(echo $TRAVIS_PHP_VERSION | cut -d '.' -f 1)"
+  - ulimit -c unlimited -S || true
+  - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com $GH_TOKEN; fi;
+  - export PHP_MAJOR="$(echo $TRAVIS_PHP_VERSION | cut -d '.' -f 1)"
 
 install:
   - bash $TRAVIS_BUILD_DIR/spec/install_phalcon.sh
