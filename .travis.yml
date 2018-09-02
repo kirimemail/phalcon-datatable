@@ -1,9 +1,10 @@
 language: php
 
 php:
-  - 5.5
   - 5.6
   - 7.0
+  - 7.1
+  - 7.2
 
 matrix:
   fast_finish: true
@@ -15,7 +16,7 @@ before_install:
     - export PHP_MAJOR="$(echo $TRAVIS_PHP_VERSION | cut -d '.' -f 1)"
 
 install:
-  - bash $TRAVIS_BUILD_DIR/tests/ci/install_phalcon.sh
+  - bash $TRAVIS_BUILD_DIR/spec/install_phalcon.sh
   - travis_retry composer install --prefer-dist --no-interaction --no-suggest --optimize-autoloader
   - phpenv rehash
   - ls -al `$(phpenv which php-config) --extension-dir`
