@@ -1,3 +1,7 @@
+[![Latest Stable Version](https://poser.pugx.org/kirimemail/phalcon-datatables/v/stable)](https://packagist.org/packages/kirimemail/phalcon-datatables) 
+[![Build Status](https://travis-ci.org/kirimemail/phalcon-datatable.svg?branch=master)](https://travis-ci.org/kirimemail/phalcon-datatable)
+[![Coverage Status](https://coveralls.io/repos/github/kirimemail/phalcon-datatable/badge.svg?branch=master)](https://coveralls.io/github/kirimemail/phalcon-datatable?branch=master)
+[![License](https://poser.pugx.org/kirimemail/phalcon-datatables/license)](https://packagist.org/packages/kirimemail/phalcon-datatables)
 # About
 This is a [Phalcon Framework](http://phalconphp.com/) adapter for [DataTables](http://www.datatables.net/).
 # Support
@@ -10,6 +14,7 @@ This is a [Phalcon Framework](http://phalconphp.com/) adapter for [DataTables](h
 * Ordering
 * Multiple column ordering
 * Column-based search
+* Caching
 
 # Installation
 ### Installation via Composer
