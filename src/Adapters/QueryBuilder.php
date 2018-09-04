@@ -76,13 +76,12 @@ class QueryBuilder extends AdapterInterface
             'limit' => $this->parser->getLimit($total->total_items),
             'page' => $this->parser->getPage(),
         ]);
-
         if ($this->cache_enabled) {
-            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getWhere() . $this->parser->getPage()))) {
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage()))) {
                 $filtered = $cache;
             } else {
                 $filtered = $builder->getPaginate();
-                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getWhere() . $this->parser->getPage()), $total);
+                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage()), $total);
             }
         } else {
             $filtered = $builder->getPaginate();

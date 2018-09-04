@@ -24,15 +24,6 @@ class CacheHelper
         $this->lifetime = $lifetime;
     }
 
-    public function hasCache($key)
-    {
-        if ($this->cache != null && $this->cache->exists($key, $this->lifetime)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function getCache($key)
     {
         if ($this->cache != null && $this->cache->exists($key, $this->lifetime)) {

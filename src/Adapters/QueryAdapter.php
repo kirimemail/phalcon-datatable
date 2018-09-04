@@ -4,6 +4,7 @@ namespace DataTables\Adapters;
 
 use DataTables\CacheHelper;
 use DataTables\HashHelper;
+use Phalcon\Db;
 
 class QueryAdapter extends AdapterInterface
 {
@@ -17,7 +18,7 @@ class QueryAdapter extends AdapterInterface
     private $cacheHelper;
     private $cache_enabled;
 
-    public function __construct($length, $cache_enabled, $cache_di = 'modelsCache', $lifetime = 86400)
+    public function __construct($length, $cache_enabled = true, $cache_di = 'modelsCache', $lifetime = 86400)
     {
         parent::__construct($length);
         $this->cacheHelper = new CacheHelper($cache_di, $lifetime);
@@ -46,9 +47,9 @@ class QueryAdapter extends AdapterInterface
         // search
         $where_or = [];
 
-        if (!empty($search = $this->parser->getSearch()['value'])) {
+        if (!empty($search = $this->parser->getSearchValue())) {
             foreach ($this->parser->getColumns() as $column) {
-                if ($column['searchable'] == 'true' && $column['name'] != '') {
+                if (isset($column['name']) && $column['searchable'] == 'true' && $column['name'] != '') {
                     $where_or[] = $column['name'] . " LIKE '%" . $search . "%' ";
                 }
             }
@@ -69,7 +70,7 @@ class QueryAdapter extends AdapterInterface
             $order_by .= ' ORDER BY ';
             foreach ($orders as $order) {
                 $column = $this->parser->getColumnByIdFull($order['column']);
-                if ($column['orderable'] == 'true' && isset($column['data']) && !empty($column['data'])) {
+                if (isset($column['orderable']) && $column['orderable'] == 'true' && isset($column['data']) && !empty($column['data'])) {
                     $order_by .= $column['data'] . ' ' . $order['dir'] . ' , ';
                 }
             }
@@ -124,10 +125,13 @@ class QueryAdapter extends AdapterInterface
             }
         }
 
+        $query = $db->query($select . $from . $where . $where_or . $group_by . $order_by . $limit);
+        $query->setFetchMode(Db::FETCH_ASSOC);
+
         return $this->formResponse([
-            'total' => $total,
-            'filtered' => $filtered,
-            'data' => $db->query($select . $from . $where . $where_or . $group_by . $order_by . $limit)->fetchAll(),
+            'total' => (int) $total,
+            'filtered' => (int) $filtered,
+            'data' => $query->fetchAll(),
         ]);
     }
 
