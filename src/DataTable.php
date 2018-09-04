@@ -103,9 +103,9 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         return $this;
     }
 
-    public function fromQuery($params = [], $cache_di = "modelsCache", $lifetime = 3600)
+    public function fromQuery($params = [])
     {
-        $adapter = new QueryAdapter($this->options['length'], $cache_di, $lifetime);
+        $adapter = new QueryAdapter($this->options['length'], $this->options['cache_enable'], $this->options['cache_di'], $this->options['cache_lifetime']);
         $adapter->setQuery($params);
         $adapter->setParser($this->parser);
         $this->response = $adapter->getResponse();

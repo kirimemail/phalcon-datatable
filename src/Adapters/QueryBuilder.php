@@ -91,7 +91,7 @@ class QueryBuilder extends AdapterInterface
         return $this->formResponse([
             'total' => $total->total_items,
             'filtered' => $filtered->total_items,
-            'data' => $filtered->items->toArray(),
+            'data' => $builder->getPaginate()->items->toArray(),
         ]);
     }
 }
