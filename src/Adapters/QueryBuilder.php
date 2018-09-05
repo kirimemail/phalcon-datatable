@@ -77,11 +77,11 @@ class QueryBuilder extends AdapterInterface
             'page' => $this->parser->getPage(),
         ]);
         if ($this->cache_enabled) {
-            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage()))) {
+            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage() . serialize($this->_bind)))) {
                 $filtered = $cache;
             } else {
                 $filtered = $builder->getPaginate();
-                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage()), $total);
+                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage() . serialize($this->_bind)), $total);
             }
         } else {
             $filtered = $builder->getPaginate();
