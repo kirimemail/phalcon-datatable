@@ -27,7 +27,7 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
         $default = [
             'limit' => 20,
             'length' => 50,
-            'cache_enable' => true,
+            'cache_enable' => false,
             'cache_di' => 'modelsCache',
             'cache_lifetime' => 3600,
         ];

@@ -18,7 +18,7 @@ class QueryAdapter extends AdapterInterface
     private $cacheHelper;
     private $cache_enabled;
 
-    public function __construct($length, $cache_enabled = true, $cache_di = 'modelsCache', $lifetime = 86400)
+    public function __construct($length, $cache_enabled = false, $cache_di = 'modelsCache', $lifetime = 86400)
     {
         parent::__construct($length);
         $this->cacheHelper = new CacheHelper($cache_di, $lifetime);
