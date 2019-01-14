@@ -111,18 +111,29 @@ class ParamsParser extends Component
 
     private function cleanData()
     {
-        $this->params = $this->cleanDataString($this->params);
+        $this->params = $this->cleanDataStringRecurse($this->params);
     }
 
-    public function cleanDataString($input, $force_utf8 = false)
+    /**
+     * Clean input data, recursively
+     * @param $input
+     * @param bool $cleanxss
+     * @param bool $force_utf8
+     * @return array|bool|mixed|null|string|string[]
+     */
+    public function cleanDataStringRecurse($input, $force_utf8 = false)
     {
         if (is_array($input)) {
             $output = [];
             foreach ($input as $key => $val) {
-                if ($force_utf8) {
-                    $output[$key] = utf8_encode($this->clean_input($val));
+                if (is_array($val)) {
+                    $output[$key] = $this->cleanDataStringRecurse($val, $force_utf8);
                 } else {
-                    $output[$key] = $this->clean_input($val);
+                    if ($force_utf8) {
+                        $output[$key] = utf8_encode($this->clean_input($val));
+                    } else {
+                        $output[$key] = $this->clean_input($val);
+                    }
                 }
             }
 
@@ -130,9 +141,9 @@ class ParamsParser extends Component
         } else {
             if ($force_utf8) {
                 return utf8_encode($this->clean_input($input));
+            } else {
+                return $this->clean_input($input);
             }
-
-            return $this->clean_input($input);
         }
     }
 
