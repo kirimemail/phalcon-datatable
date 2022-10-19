@@ -38,11 +38,12 @@ class QueryBuilder extends AdapterInterface
             'page' => 1,
         ]);
         if ($this->cache_enabled) {
-            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getWhere()))) {
+            $cache_key = HashHelper::hash(serialize($builder->getQueryBuilder()->getQuery()->getSql()));
+            if ($cache = $this->cacheHelper->getCache($cache_key)) {
                 $total = $cache;
             } else {
                 $total = $builder->getPaginate();
-                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getWhere()), $total);
+                $this->cacheHelper->saveCache($cache_key, $total);
             }
         } else {
             $total = $builder->getPaginate();
@@ -77,11 +78,12 @@ class QueryBuilder extends AdapterInterface
             'page' => $this->parser->getPage(),
         ]);
         if ($this->cache_enabled) {
-            if ($cache = $this->cacheHelper->getCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage() . serialize($this->_bind)))) {
+            $cache_key = HashHelper::hash(serialize($builder->getQueryBuilder()->getQuery()->getSql()) . $this->parser->getPage() . serialize($this->_bind));
+            if ($cache = $this->cacheHelper->getCache($cache_key)) {
                 $filtered = $cache;
             } else {
                 $filtered = $builder->getPaginate();
-                $this->cacheHelper->saveCache(HashHelper::hash($builder->getQueryBuilder()->getPhql() . $this->parser->getPage() . serialize($this->_bind)), $total);
+                $this->cacheHelper->saveCache($cache_key, $total);
             }
         } else {
             $filtered = $builder->getPaginate();
