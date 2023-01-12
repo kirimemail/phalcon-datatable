@@ -150,7 +150,9 @@ class DataTable extends \Phalcon\Mvc\User\Plugin
             $this->options['length'], 
             $this->options['cache_enable'], 
             $this->options['cache_di'], 
-            $this->options['cache_lifetime']
+            $this->options['cache_lifetime'],
+            $this->options['left_off_pagination'],
+            $this->options['left_off_column']
         );
 
         $adapter->setBuilder($builder);
